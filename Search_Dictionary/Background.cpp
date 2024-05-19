@@ -16,6 +16,9 @@ void Background::initBackground()
 {
 	BackgroundPic.setTexture(BackgroundPicTexture);
 	BackgroundPic.setPosition(0, 0);
+
+	Icon.setTexture(IconTexture);
+	Icon.setPosition(401,19);
 }
 
 Background::Background()
@@ -31,4 +34,5 @@ Background::~Background()
 void Background::render(sf::RenderTarget& target)
 {
 	target.draw(this->BackgroundPic);
+	target.draw(this->Icon);
 }

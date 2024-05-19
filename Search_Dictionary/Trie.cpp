@@ -116,44 +116,60 @@ std::vector<std::string> Trie::searchMisspelledWord(const std::string& word, int
     return similarWords;
 }
 
-void Trie::fuzzySearch(const std::string& word, int maxDistance, TrieNode* node, std::string currWord, std::vector<std::string>& similarWords) {
-    if (node->isEndOfWord && levenshteinDistance(word, currWord) <= maxDistance) {
+void Trie::fuzzySearch(const std::string& word, int maxDistance, TrieNode* node, std::string currWord, std::vector<std::string>& similarWords) 
+{
+    if (node->isEndOfWord && levenshteinDistance(word, currWord) <= maxDistance)
+    {
         similarWords.push_back(currWord);
     }
 
-    for (int i = 0; i < 26; ++i) {
-        if (node->children[i] != nullptr) {
+    for (int i = 0; i < 26; ++i) 
+    {
+        if (node->children[i] != nullptr)
+        {
             char c = 'a' + i;
             fuzzySearch(word, maxDistance, node->children[i], currWord + c, similarWords);
         }
     }
 }
 
-void Trie::wildcardSearch(const std::string& pattern, int patternIndex, TrieNode* node, std::string currWord, std::vector<std::string>& matches) {
+std::vector<std::string> Trie::wildcardSearch(const std::string& pattern, int patternIndex, TrieNode* node, std::string currWord) {
+    std::vector<std::string> matches;
+
     if (node == nullptr)
-        return;
+        return matches;
 
     if (patternIndex == pattern.length()) {
         if (node->isEndOfWord)
             matches.push_back(currWord);
-        return;
+        return matches;
     }
 
     if (pattern[patternIndex] == '*') {
-        // Match any character
+
         for (int i = 0; i < 26; i++) {
             if (node->children[i] != nullptr) {
                 char c = 'a' + i;
-                wildcardSearch(pattern, patternIndex + 1, node->children[i], currWord + c, matches);
+                std::vector<std::string> subMatches = wildcardSearch(pattern, patternIndex + 1, node->children[i], currWord + c);
+                matches.insert(matches.end(), subMatches.begin(), subMatches.end());
             }
         }
     }
-    else {
+    else 
+    {
         int index = pattern[patternIndex] - 'a';
-        if (node->children[index] != nullptr) {
-            wildcardSearch(pattern, patternIndex + 1, node->children[index], currWord + pattern[patternIndex], matches);
+        if (node->children[index] != nullptr) 
+        {
+            std::vector<std::string> subMatches = wildcardSearch(pattern, patternIndex + 1, node->children[index], currWord + pattern[patternIndex]);
+            matches.insert(matches.end(), subMatches.begin(), subMatches.end());
         }
     }
+
+    return matches;
+}
+
+std::vector<std::string> Trie::getWildcardMatches(const std::string& pattern) {
+    return wildcardSearch(pattern, 0, root, "");
 }
 
 void Trie::suffixSearch(TrieNode* node, std::string suffix, std::string currWord, std::vector<std::string>& matches) {
@@ -174,13 +190,15 @@ void Trie::suffixSearch(TrieNode* node, std::string suffix, std::string currWord
     }
 }
 
-std::vector<std::string> Trie::suffixPatternSearch(const std::string& suffix) {
+std::vector<std::string> Trie::suffixPatternSearch(const std::string& suffix) 
+{
     std::vector<std::string> matches;
     suffixSearch(root, suffix, "", matches);
     return matches;
 }
 
-std::vector<std::string> Trie::prefixPatternSearch(const std::string& prefix) {
+std::vector<std::string> Trie::prefixPatternSearch(const std::string& prefix) 
+{
     std::vector<std::string> matches;
     prefixSearch(root, prefix, "", matches);
     return matches;

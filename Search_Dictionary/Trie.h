@@ -27,9 +27,10 @@ public:
     std::vector<std::string> searchMisspelledWord(const std::string& word, int maxDistance);
     void fuzzySearch(const std::string& word, int maxDistance, TrieNode* node, std::string currWord, std::vector<std::string>& similarWords);
 
-    void wildcardSearch(const std::string& pattern, int patternIndex, TrieNode* node, std::string currWord, std::vector<std::string>& matches);
+    std::vector<std::string> wildcardSearch(const std::string& pattern, int patternIndex, TrieNode* node, std::string currWord);
 
     std::vector<std::string> suffixPatternSearch(const std::string& suffix);
+    std::vector<std::string> getWildcardMatches(const std::string& pattern);
     void suffixSearch(TrieNode* node, std::string suffix, std::string currWord, std::vector<std::string>& matches);
 
     std::vector<std::string> prefixPatternSearch(const std::string& prefix);
